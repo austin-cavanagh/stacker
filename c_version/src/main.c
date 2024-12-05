@@ -29,6 +29,7 @@ int ledPins[NUM_LEDS] = {
 
 void turnOnAllLeds();
 void turnOnOFFLeds();
+void startAnimation();
 
 int main(void) {
     // Initialize gpio with wiringpi setup
@@ -39,8 +40,16 @@ int main(void) {
         pinMode(ledPins[i], OUTPUT);
     }
 
+
+
+    while (1) {
+        startAnimation();
+    }
+
+
+
     // turnOnAllLeds();
-    turnOnOFFLeds();
+    // turnOnOFFLeds();
 
     // // Set the button pin as an input
     // pinMode(PIN_BUTTON, INPUT);
@@ -95,4 +104,26 @@ void turnOnOFFLeds() {
     for (int i = 0; i < NUM_LEDS; i++) {
         digitalWrite(ledPins[i], LOW);
     }
+}
+
+// Function to perform the starting animation
+void startAnimation() {
+    int i;
+
+    // Forward sequence from RED_1 to BLUE_4
+    for (i = 0; i < NUM_LEDS; i++) {
+        digitalWrite(ledPins[i], HIGH); // Turn on the current LED
+        delay(30); // Wait for 500 ms
+        digitalWrite(ledPins[i], LOW);  // Turn off the current LED
+        delay(30); // Wait for 500 ms before the next LED turns on
+    }
+
+    // Reverse sequence from BLUE_4 back to RED_1
+    for (i = NUM_LEDS - 2; i > 0; i--) {  // Start from the second last LED and stop before the first LED
+        digitalWrite(ledPins[i], HIGH); // Turn on the current LED
+        delay(30); // Wait for 500 ms
+        digitalWrite(ledPins[i], LOW);  // Turn off the current LED
+        delay(30); // Wait for 500 ms before the next LED turns on
+    }
+    // No delay after last LED to smoothly continue to first LED in the next cycle
 }
