@@ -30,6 +30,7 @@ int ledPins[NUM_LEDS] = {
 void turnOnAllLeds();
 void turnOnOFFLeds();
 void startAnimation();
+void flashColorSpecificLeds();
 
 int main(void) {
     // Initialize gpio with wiringpi setup
@@ -42,8 +43,13 @@ int main(void) {
 
 
 
+
+
     while (1) {
         startAnimation();
+
+
+        // flashColorSpecificLeds();
     }
 
 
@@ -106,24 +112,62 @@ void turnOnOFFLeds() {
     }
 }
 
-// Function to perform the starting animation
+// Functiom performs the starting animation
 void startAnimation() {
-    int i;
-
-    // Forward sequence from RED_1 to BLUE_4
-    for (i = 0; i < NUM_LEDS; i++) {
-        digitalWrite(ledPins[i], HIGH); // Turn on the current LED
-        delay(30); // Wait for 500 ms
-        digitalWrite(ledPins[i], LOW);  // Turn off the current LED
-        delay(30); // Wait for 500 ms before the next LED turns on
+    // Light leds to end
+    for (int i = 0; i < NUM_LEDS; i++) {
+        // Light up current led
+        digitalWrite(ledPins[i], HIGH);
+        delay(30); 
+        // Turn off current led
+        digitalWrite(ledPins[i], LOW); 
+        delay(30); 
     }
 
-    // Reverse sequence from BLUE_4 back to RED_1
-    for (i = NUM_LEDS - 2; i > 0; i--) {  // Start from the second last LED and stop before the first LED
-        digitalWrite(ledPins[i], HIGH); // Turn on the current LED
-        delay(30); // Wait for 500 ms
-        digitalWrite(ledPins[i], LOW);  // Turn off the current LED
-        delay(30); // Wait for 500 ms before the next LED turns on
+    // Light leds to start
+    // Start from the second to last led so it does not light 2 times
+    // End before the first led so loop begins at first led again
+    for (int i = NUM_LEDS - 2; i > 0; i--) {  
+        // Light up current led
+        digitalWrite(ledPins[i], HIGH);
+        delay(30);
+        // Turn off current led
+        digitalWrite(ledPins[i], LOW); 
+        delay(30); 
     }
-    // No delay after last LED to smoothly continue to first LED in the next cycle
+}
+
+
+
+
+
+
+
+
+
+
+void flashColorSpecificLeds() {
+    int flashCount = 3;  // Number of times to flash each color group
+    int delayMs = 500;   // Delay in milliseconds for each LED to be on
+
+    for (int count = 0; count < flashCount; count++) {
+        // Flash all LEDs once per cycle, red then blue
+        for (int i = 0; i < NUM_LEDS; i++) {
+            // Turn on only the red LEDs (even indices)
+            if (i % 2 == 0) {
+                digitalWrite(ledPins[i], HIGH);  // Turn on the RED LED
+                delay(delayMs);
+                digitalWrite(ledPins[i], LOW);  // Turn off the RED LED
+            }
+        }
+
+        for (int i = 0; i < NUM_LEDS; i++) {
+            // Then turn on only the blue LEDs (odd indices)
+            if (i % 2 != 0) {
+                digitalWrite(ledPins[i], HIGH);  // Turn on the BLUE LED
+                delay(delayMs);
+                digitalWrite(ledPins[i], LOW);  // Turn off the BLUE LED
+            }
+        }
+    }
 }
