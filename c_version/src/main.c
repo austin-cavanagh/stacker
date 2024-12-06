@@ -57,8 +57,6 @@ int main(void) {
         }
     }
 
-    printf("You won!\n");
-
     // Display end animation after completing the game
     endAnimation(10, 250);
 
@@ -166,11 +164,9 @@ int checkButtonPress(int *buttonState, int *lastButtonReading, unsigned long *la
             if (*buttonState == HIGH) {
                 if (ledOn) {
                     // Return 1 if button pressed while LED is ON
-                    printf("Success\n");
                     return 1;
                 } else {
                     // Return 0 if button pressed while LED is ON
-                    printf("Fail\n");
                     return 0;
                 }
             }
