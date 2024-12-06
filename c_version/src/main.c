@@ -32,7 +32,6 @@ void turnOffLeds();
 
 void configurePins();
 void startAnimation();
-void startAnimationNew();
 void flashColorSpecificLeds();
 
 int blinkLed(int ledPin, int blinkDuration);
@@ -42,20 +41,14 @@ int main(void) {
     // Configure gpio pins used for the game
     configurePins();
 
-    while (1) {
-        turnOffLeds();
-    }
+    // Run start animation until button is pressed
+    startAnimation();
     
     int curLed = 0;
-    while (1) {
+    while (curLed < NUM_LEDS) {
         int success = blinkLed(ledPins[curLed], 2000);
         if (success) {
             curLed++;
-            if (curLed >= NUM_LEDS) {
-                // All LEDs have been successfully pressed in sequence
-                printf("You won!\n");
-                return 0;
-            }
         } else {
             curLed = 0;
             turnOffLeds();
@@ -64,45 +57,12 @@ int main(void) {
 
     printf("You won!\n");
 
+    turnOffLeds();
+
     return 0;
 }
 
-
-
-// Checks for a stable button press. Returns:
-//  1 if success (LED on press)
-//  0 if fail (LED off press)
-// -1 if no definitive press event yet
-int checkButtonPress(int *buttonState, int *lastButtonReading, unsigned long *lastDebounceTime, int ledOn, unsigned long debounceDelay) {
-    int reading = digitalRead(PIN_BUTTON);
-
-    if (reading != *lastButtonReading) {
-        *lastDebounceTime = millis();
-    }
-
-    if ((millis() - *lastDebounceTime) > debounceDelay) {
-        if (reading != *buttonState) {
-            *buttonState = reading;
-            // If the new stable state is HIGH (button pressed)
-            if (*buttonState == HIGH) {
-                // If LED is ON right now, it's a success
-                if (ledOn) {
-                    printf("Success\n");
-                    return 1;
-                } else {
-                    // LED is OFF right now, so it's a fail
-                    printf("Fail\n");
-                    return 0;
-                }
-            }
-        }
-    }
-
-    *lastButtonReading = reading;
-    return -1;
-}
-
-
+// Function handles blinking each LED and logic for button pressing
 int blinkLed(int ledPin, int blinkDuration) {
     // Debouncing variables
     int buttonState = LOW;         
@@ -110,109 +70,117 @@ int blinkLed(int ledPin, int blinkDuration) {
     unsigned long lastDebounceTime = 0;
     unsigned long debounceDelay = 25;
 
-    // Before starting the LED blink cycle, ensure the button is not pressed.
-    // If the user is still holding the button down, wait until it's released.
+    // Wait to start the LED blinking until the button is released from last press
     while (digitalRead(PIN_BUTTON) == HIGH) {
-        delay(5); // wait until the user releases the button
+        delay(5);
     }
 
-    int elapsedTime = 0;
+    // Loop until the button is pressed
+    while (1) {
+        // Variable to handle blinking timing
+        int elapsedTime = 0;
 
-    // LED ON phase
-    digitalWrite(ledPin, HIGH);
-    elapsedTime = 0;
-    while (elapsedTime < blinkDuration) {
-        int result = checkButtonPress(&buttonState, &lastButtonReading, &lastDebounceTime, 1, debounceDelay);
-        if (result != -1) {
-            return result; // Either success (1) or fail (0)
+        // LED ON logic
+        digitalWrite(ledPin, HIGH);
+        elapsedTime = 0;
+        while (elapsedTime < blinkDuration) {
+            int result = checkButtonPress(&buttonState, &lastButtonReading, &lastDebounceTime, 1, debounceDelay);
+            if (result != -1) {
+                return result; 
+            }
+            delay(1);
+            elapsedTime += 1;
         }
-        delay(1);
-        elapsedTime += 1;
-    }
 
-    // LED OFF phase
-    digitalWrite(ledPin, LOW);
-    elapsedTime = 0;
-    while (elapsedTime < blinkDuration) {
-        int result = checkButtonPress(&buttonState, &lastButtonReading, &lastDebounceTime, 0, debounceDelay);
-        if (result != -1) {
-            return result; // Either success (0) or success (1) -- but here it should fail if pressed
+        // LED OFF logic
+        digitalWrite(ledPin, LOW);
+        elapsedTime = 0;
+        while (elapsedTime < blinkDuration) {
+            int result = checkButtonPress(&buttonState, &lastButtonReading, &lastDebounceTime, 0, debounceDelay);
+            if (result != -1) {
+                return result; 
+            }
+            delay(1);
+            elapsedTime += 1;
         }
-        delay(1);
-        elapsedTime += 1;
     }
-
-    // If no press detected in either on/off phase, just repeat until a press occurs
-    return blinkLed(ledPin, blinkDuration);
 }
 
+// Function checks for a stable button press with debouncing logic
+int checkButtonPress(int *buttonState, int *lastButtonReading, unsigned long *lastDebounceTime, int ledOn, unsigned long debounceDelay) {
+    // Variable to handle the current button reading
+    int curButtonReading = digitalRead(PIN_BUTTON);
 
+    // When a change is the button state is detected restart the doubounce timer
+    if (curButtonReading != *lastButtonReading) {
+        *lastDebounceTime = millis();
+    }
 
+    // If the debounce timer is greater than the debounce delay 
+    if ((millis() - *lastDebounceTime) > debounceDelay) {
+        // And the new reading is different update the button state
+        if (curButtonReading != *buttonState) {
+            *buttonState = curButtonReading;
 
+            // If the new button state is high it means the button was pressed
+            if (*buttonState == HIGH) {
+                if (ledOn) {
+                    // Return 1 if button pressed while LED is ON
+                    printf("Success\n");
+                    return 1;
+                } else {
+                    // Return 0 if button pressed while LED is ON
+                    printf("Fail\n");
+                    return 0;
+                }
+            }
+        }
+    }
 
+    // Update the last button reading with the current button reading
+    *lastButtonReading = curButtonReading;
 
+    // Return -1 for no button press
+    return -1;
+}
 
-
-void startAnimationNew() {
+// Function handles the start annimation before the button is pressed to start the game
+void startAnimation() {
     int buttonState;
 
-    // Continuously run the animation until the button is pressed
+    // Loop through the animation until the button is pressed
     while (1) {
         // Light LEDs from start to end
         for (int i = 0; i < NUM_LEDS; i++) {
             digitalWrite(ledPins[i], HIGH);
-            delay(30); 
+            delay(40); 
             digitalWrite(ledPins[i], LOW); 
-            delay(30);
+            delay(40);
 
+            // Exit function to start game if button is pressed
             buttonState = digitalRead(PIN_BUTTON);
             if (buttonState == HIGH) {
                 turnOffLeds();
-                return; // Exit function and proceed to game logic
+                return; 
             }
         }
 
         // Light LEDs from end to start
         for (int i = NUM_LEDS - 2; i > 0; i--) {
             digitalWrite(ledPins[i], HIGH);
-            delay(30);
+            delay(40);
             digitalWrite(ledPins[i], LOW); 
-            delay(30);
+            delay(40);
 
+            // Exit function to start game if button is pressed
             buttonState = digitalRead(PIN_BUTTON);
             if (buttonState == HIGH) {
                 turnOffLeds();
-                return; // Exit function and proceed to game logic
+                return; 
             }
         }
     }
 }
-
-// Functiom performs the starting animation
-void startAnimation() {
-    // Light leds to end
-    for (int i = 0; i < NUM_LEDS; i++) {
-        // Light up current led
-        digitalWrite(ledPins[i], HIGH);
-        delay(30); 
-        // Turn off current led
-        digitalWrite(ledPins[i], LOW); 
-        delay(30); 
-    }
-
-    // Light leds to start
-    // Start from the second to last led so it does not light 2 times
-    // End before the first led so loop begins at first led again
-    for (int i = NUM_LEDS - 2; i > 0; i--) {  
-        // Light up current led
-        digitalWrite(ledPins[i], HIGH);
-        delay(30);
-        // Turn off current led
-        digitalWrite(ledPins[i], LOW); 
-        delay(30); 
-    }
-}
-
 
 // Function configures the gpio pins used for the game
 void configurePins() {
@@ -228,14 +196,14 @@ void configurePins() {
     pinMode(PIN_BUTTON, INPUT);
 }
 
-// Function to turn on all leds
+// Function turns on all LEDs
 void turnOnLeds() {
     for (int i = 0; i < NUM_LEDS; i++) {
         digitalWrite(ledPins[i], HIGH);
     }
 }
 
-// Function to turn off all leds
+// Function turns off all LEDs
 void turnOffLeds() {
     for (int i = 0; i < NUM_LEDS; i++) {
         digitalWrite(ledPins[i], LOW);
