@@ -37,11 +37,13 @@ void flashColorSpecificLeds();
 int blinkLed(int ledPin, int blinkDuration);
 int checkButtonPress(int *buttonState, int *lastButtonReading, unsigned long *lastDebounceTime, int ledOn, unsigned long debounceDelay);
 
+void endAnimation(int blinkCount, int blinkDuration);
+
 int main(void) {
     // Configure gpio pins used for the game
     configurePins();
 
-    // Run start animation until button is pressed
+    // Display start animation until button is pressed
     startAnimation();
     
     int curLed = 0;
@@ -57,9 +59,47 @@ int main(void) {
 
     printf("You won!\n");
 
-    turnOffLeds();
+    // Display end animation after completing the game
+    endAnimation(10, 250);
 
     return 0;
+}
+
+void endAnimation(int blinkCount, int blinkDuration) {
+    for (int i = 0; i < blinkCount; i++) {
+        // Turn on blue LEDs
+        for (int i = 0; i < NUM_LEDS; i++) {
+            if (i == 1 || i == 3 || i == 5 || i == 7) {
+                digitalWrite(ledPins[i], HIGH);
+            }
+        }
+
+        delay(blinkDuration);
+
+        // Turn off blue LEDs
+        for (int i = 0; i < NUM_LEDS; i++) {
+            if (i == 1 || i == 3 || i == 5 || i == 7) {
+                digitalWrite(ledPins[i], LOW);
+            }
+        }
+
+        // Turn on red LEDs
+        for (int i = 0; i < NUM_LEDS; i++) {
+                // Red LEDs at indices 0, 2, 4, 6
+                if (i == 0 || i == 2 || i == 4 || i == 6) {
+                    digitalWrite(ledPins[i], HIGH);
+                }
+        }
+
+        delay(blinkDuration);
+
+        // Turn off red LEDs
+        for (int i = 0; i < NUM_LEDS; i++) {
+                if (i == 0 || i == 2 || i == 4 || i == 6) {
+                    digitalWrite(ledPins[i], LOW);
+                }
+        }
+    }
 }
 
 // Function handles blinking each LED and logic for button pressing
