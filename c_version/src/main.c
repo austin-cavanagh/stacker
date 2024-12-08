@@ -38,6 +38,7 @@ int blinkLed(int ledPin, int blinkDuration);
 int checkButtonPress(int *buttonState, int *lastButtonReading, unsigned long *lastDebounceTime, int ledOn, unsigned long debounceDelay);
 
 void endAnimation(int blinkCount, int blinkDuration);
+void playGame();
 
 int main(void) {
     // Configure gpio pins used for the game
@@ -45,7 +46,19 @@ int main(void) {
 
     // Display start animation until button is pressed
     startAnimation();
-    
+
+    // Play the game
+    playGame();
+
+    // Display end animation after completing the game
+    endAnimation(10, 250);
+
+    return 0;
+}
+
+
+// Function handles core game logic
+void playGame() {
     int curLed = 0;
     while (curLed < NUM_LEDS) {
         int success = blinkLed(ledPins[curLed], 2000);
@@ -56,13 +69,9 @@ int main(void) {
             turnOffLeds();
         }
     }
-
-    // Display end animation after completing the game
-    endAnimation(10, 250);
-
-    return 0;
 }
 
+// Function handles the end annimation after the game ends
 void endAnimation(int blinkCount, int blinkDuration) {
     for (int i = 0; i < blinkCount; i++) {
         // Turn on blue LEDs
@@ -180,43 +189,23 @@ int checkButtonPress(int *buttonState, int *lastButtonReading, unsigned long *la
     return -1;
 }
 
-// Function handles the start annimation before the button is pressed to start the game
-void startAnimation() {
-    int buttonState;
-
-    // Loop through the animation until the button is pressed
-    while (1) {
-        // Light LEDs from start to end
-        for (int i = 0; i < NUM_LEDS; i++) {
-            digitalWrite(ledPins[i], HIGH);
-            delay(40); 
-            digitalWrite(ledPins[i], LOW); 
-            delay(40);
-
-            // Exit function to start game if button is pressed
-            buttonState = digitalRead(PIN_BUTTON);
-            if (buttonState == HIGH) {
-                turnOffLeds();
-                return; 
-            }
-        }
-
-        // Light LEDs from end to start
-        for (int i = NUM_LEDS - 2; i > 0; i--) {
-            digitalWrite(ledPins[i], HIGH);
-            delay(40);
-            digitalWrite(ledPins[i], LOW); 
-            delay(40);
-
-            // Exit function to start game if button is pressed
-            buttonState = digitalRead(PIN_BUTTON);
-            if (buttonState == HIGH) {
-                turnOffLeds();
-                return; 
-            }
-        }
+// Function turns on all LEDs
+void turnOnLeds() {
+    for (int i = 0; i < NUM_LEDS; i++) {
+        digitalWrite(ledPins[i], HIGH);
     }
 }
+
+// Function turns off all LEDs
+void turnOffLeds() {
+    for (int i = 0; i < NUM_LEDS; i++) {
+        digitalWrite(ledPins[i], LOW);
+    }
+}
+
+
+
+
 
 // Function configures the gpio pins used for the game
 void configurePins() {
@@ -232,16 +221,39 @@ void configurePins() {
     pinMode(PIN_BUTTON, INPUT);
 }
 
-// Function turns on all LEDs
-void turnOnLeds() {
-    for (int i = 0; i < NUM_LEDS; i++) {
-        digitalWrite(ledPins[i], HIGH);
-    }
-}
+// Function handles the start annimation before the button is pressed to start the game
+void startAnimation() {
+    // Variable to hold button state
+    int buttonState;
 
-// Function turns off all LEDs
-void turnOffLeds() {
-    for (int i = 0; i < NUM_LEDS; i++) {
-        digitalWrite(ledPins[i], LOW);
+    // Loop through the animation until the button is pressed
+    while (1) {
+        // Light LEDs from start to end
+        for (int i = 0; i < NUM_LEDS; i++) {
+            digitalWrite(ledPins[i], HIGH);
+            delay(40); 
+            digitalWrite(ledPins[i], LOW); 
+            delay(40);
+
+            // Exit function to start game if button is pressed
+            buttonState = digitalRead(PIN_BUTTON);
+            if (buttonState == HIGH) {
+                return; 
+            }
+        }
+
+        // Light LEDs from end to start
+        for (int i = NUM_LEDS - 2; i > 0; i--) {
+            digitalWrite(ledPins[i], HIGH);
+            delay(40);
+            digitalWrite(ledPins[i], LOW); 
+            delay(40);
+
+            // Exit function to start game if button is pressed
+            buttonState = digitalRead(PIN_BUTTON);
+            if (buttonState == HIGH) {
+                return; 
+            }
+        }
     }
 }
