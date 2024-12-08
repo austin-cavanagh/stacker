@@ -56,55 +56,21 @@ int main(void) {
     return 0;
 }
 
-
 // Function handles core game logic
 void playGame() {
     int curLed = 0;
+
+    // Loop until curLed equals NUM_LEDS
     while (curLed < NUM_LEDS) {
+        // Blink current LED and get success or failure from button press
         int success = blinkLed(ledPins[curLed], 2000);
+        
+        // Determine if press was a success or failure
         if (success) {
             curLed++;
         } else {
             curLed = 0;
             turnOffLeds();
-        }
-    }
-}
-
-// Function handles the end annimation after the game ends
-void endAnimation(int blinkCount, int blinkDuration) {
-    for (int i = 0; i < blinkCount; i++) {
-        // Turn on blue LEDs
-        for (int i = 0; i < NUM_LEDS; i++) {
-            if (i == 1 || i == 3 || i == 5 || i == 7) {
-                digitalWrite(ledPins[i], HIGH);
-            }
-        }
-
-        delay(blinkDuration);
-
-        // Turn off blue LEDs
-        for (int i = 0; i < NUM_LEDS; i++) {
-            if (i == 1 || i == 3 || i == 5 || i == 7) {
-                digitalWrite(ledPins[i], LOW);
-            }
-        }
-
-        // Turn on red LEDs
-        for (int i = 0; i < NUM_LEDS; i++) {
-                // Red LEDs at indices 0, 2, 4, 6
-                if (i == 0 || i == 2 || i == 4 || i == 6) {
-                    digitalWrite(ledPins[i], HIGH);
-                }
-        }
-
-        delay(blinkDuration);
-
-        // Turn off red LEDs
-        for (int i = 0; i < NUM_LEDS; i++) {
-                if (i == 0 || i == 2 || i == 4 || i == 6) {
-                    digitalWrite(ledPins[i], LOW);
-                }
         }
     }
 }
@@ -187,6 +153,45 @@ int checkButtonPress(int *buttonState, int *lastButtonReading, unsigned long *la
 
     // Return -1 for no button press
     return -1;
+}
+
+// Function handles the end annimation after the game ends
+void endAnimation(int blinkCount, int blinkDuration) {
+    // Run animation based on blink count argument variable
+    for (int i = 0; i < blinkCount; i++) {
+        // Turn on blue LEDs
+        for (int i = 0; i < NUM_LEDS; i++) {
+            if (i == 1 || i == 3 || i == 5 || i == 7) {
+                digitalWrite(ledPins[i], HIGH);
+            }
+        }
+
+        delay(blinkDuration);
+
+        // Turn off blue LEDs
+        for (int i = 0; i < NUM_LEDS; i++) {
+            if (i == 1 || i == 3 || i == 5 || i == 7) {
+                digitalWrite(ledPins[i], LOW);
+            }
+        }
+
+        // Turn on red LEDs
+        for (int i = 0; i < NUM_LEDS; i++) {
+                // Red LEDs at indices 0, 2, 4, 6
+                if (i == 0 || i == 2 || i == 4 || i == 6) {
+                    digitalWrite(ledPins[i], HIGH);
+                }
+        }
+
+        delay(blinkDuration);
+
+        // Turn off red LEDs
+        for (int i = 0; i < NUM_LEDS; i++) {
+                if (i == 0 || i == 2 || i == 4 || i == 6) {
+                    digitalWrite(ledPins[i], LOW);
+                }
+        }
+    }
 }
 
 // Function turns on all LEDs
