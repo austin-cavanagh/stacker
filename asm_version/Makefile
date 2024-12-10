@@ -19,10 +19,10 @@ ASM_SRC = $(SRC_DIR)/main.s
 OBJ = $(BUILD_DIR)/blinkLed.o $(BUILD_DIR)/main.o
 
 # Default target
-all: main
+all: $(BUILD_DIR)/main
 
 # The final binary
-main: $(OBJ)
+$(BUILD_DIR)/main: $(OBJ)
 	$(CC) -o $@ $^ $(LDFLAGS)
 
 # Compile C source file(s)
@@ -39,10 +39,10 @@ $(BUILD_DIR):
 
 # Clean up build artifacts
 clean:
-	rm -rf $(BUILD_DIR) main
+	rm -rf $(BUILD_DIR) $(SRC_DIR)/*.o
 
 # Run the program
-run: main
-	./main
+run: $(BUILD_DIR)/main
+	./$(BUILD_DIR)/main
 
 .PHONY: all clean run

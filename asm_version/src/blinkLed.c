@@ -8,6 +8,7 @@ int ledPins[NUM_LEDS] = {18, 23, 24, 25, 12, 16, 20, 21};
 
 int checkButtonPress(int *buttonState, int *lastButtonReading, unsigned long *lastDebounceTime, int ledOn, unsigned long debounceDelay);
 
+// Function handles blinking each LED and logic for button pressing
 int blinkLed(int ledPin, int blinkDuration) {
     int buttonState = LOW;         
     int lastButtonReading = LOW;   
@@ -38,6 +39,7 @@ int blinkLed(int ledPin, int blinkDuration) {
     }
 }
 
+// Function checks for a stable button press with debouncing logic
 int checkButtonPress(int *buttonState, int *lastButtonReading, unsigned long *lastDebounceTime, int ledOn, unsigned long debounceDelay) {
     int curButtonReading = digitalRead(PIN_BUTTON);
     if (curButtonReading != *lastButtonReading)

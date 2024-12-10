@@ -1,24 +1,26 @@
 CC=gcc
 CFLAGS=-Wall -g
-LDFLAGS=-lwiringPi  # This should be correctly positioned in the linking command
+LDFLAGS=-lwiringPi  
 
 SRC_DIR=./src
 BUILD_DIR=./build
 TARGET=$(BUILD_DIR)/stacker
 
+SRCS=$(wildcard $(SRC_DIR)/*.c)
+OBJS=$(patsubst $(SRC_DIR)/%.c, $(BUILD_DIR)/%.o, $(SRCS))
+
 all: $(TARGET)
 
-$(TARGET): $(SRC_DIR)/main.o
+$(TARGET): $(OBJS)
 	mkdir -p $(BUILD_DIR)
 	$(CC) $^ -o $@ $(LDFLAGS)
 
-$(SRC_DIR)/main.o: $(SRC_DIR)/main.c
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
+	mkdir -p $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 run: $(TARGET)
 	./$(TARGET)
 
 clean:
-	rm -rf $(BUILD_DIR) $(SRC_DIR)/*.o
-
-.PHONY: all clean run
+	rm -rf $(BUILD_DIR)
