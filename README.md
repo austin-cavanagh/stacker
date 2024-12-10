@@ -4,14 +4,26 @@
 
 <br />
 <div align="center">
-  <h3 align="center">Raspberry Pi Stacker Arcade Game</h3>
+  <h3 align="center">Raspberry Pi Stacker Game</h3>
 </div>
+
+<!-- BUILT WITH -->
+
+## Built With
+
+![RaspberryPi](https://img.shields.io/badge/Raspberry_Pi-C51A4A?style=for-the-badge&logo=raspberrypi)
+![C](https://img.shields.io/badge/C-00599C?style=for-the-badge&logo=c&logoColor=white)
+![ARM Assembly](https://img.shields.io/badge/ARM_Assembly-007ACC?style=for-the-badge&logo=arm&logoColor=white)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- OVERVIEW -->
 
 ## Overview
 
 Welcome to the Raspberry Pi Stacker Arcade Game! This application lets you build and play the popular arcade game "Stacker" using your Raspberry Pi connected to a breadboard. This application helps students to learn more about electronics and programming through hands-on experience.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- HIGHLIGHTS -->
 
@@ -24,16 +36,6 @@ Welcome to the Raspberry Pi Stacker Arcade Game! This application lets you build
 <br>
 
 I hope this application helps you better understand your Raspberry Pi electronics!
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-<!-- BUILT WITH -->
-
-## Built With
-
-![RaspberryPi](https://img.shields.io/badge/Raspberry_Pi-C51A4A?style=for-the-badge&logo=raspberrypi)
-![C](https://img.shields.io/badge/C-00599C?style=for-the-badge&logo=c&logoColor=white)
-![ARM Assembly](https://img.shields.io/badge/ARM_Assembly-007ACC?style=for-the-badge&logo=arm&logoColor=white)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
