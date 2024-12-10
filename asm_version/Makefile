@@ -19,10 +19,10 @@ ASM_SRC = $(SRC_DIR)/main.s
 OBJ = $(BUILD_DIR)/blinkLed.o $(BUILD_DIR)/main.o
 
 # Default target
-all: $(BUILD_DIR)/main
+all: $(BUILD_DIR)/stacker  # Changed the target name here
 
 # The final binary
-$(BUILD_DIR)/main: $(OBJ)
+$(BUILD_DIR)/stacker: $(OBJ)  # Changed the target name here
 	$(CC) -o $@ $^ $(LDFLAGS)
 
 # Compile C source file(s)
@@ -42,7 +42,7 @@ clean:
 	rm -rf $(BUILD_DIR) $(SRC_DIR)/*.o
 
 # Run the program
-run: $(BUILD_DIR)/main
-	./$(BUILD_DIR)/main
+run: $(BUILD_DIR)/stacker  # Changed the target name here
+	./$(BUILD_DIR)/stacker  # Changed the executable name here
 
 .PHONY: all clean run
