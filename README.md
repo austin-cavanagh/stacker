@@ -56,6 +56,8 @@ To play the Stacker game, you'll need to assemble the breadboard hardware and co
 - **1 Push buttons**: For game input (e.g., Start/Select).
 - **9 Resistors**: Various values to protect the LEDs and buttons.
 
+---
+
 ### Hardware Assembly
 
 1. **Connect LEDs to GPIO pins:**
@@ -71,6 +73,8 @@ To play the Stacker game, you'll need to assemble the breadboard hardware and co
 
 3. **Power the breadboard:**
    - Use jumper wires to connect the power (3.3V) and ground (GND) pins of the Raspberry Pi to the breadboard's power rails.
+
+---
 
 ### GPIO Pin Configuration
 
@@ -117,6 +121,8 @@ Before proceeding with either version, ensure the following tools are installed 
   sudo apt-get install make
   ```
 
+---
+
 <!-- COMMON SETUP -->
 
 ### Common Setup
@@ -132,6 +138,8 @@ To clone the repository onto your Raspberry Pi follow these steps.
    ```sh
    cd stacker
    ```
+
+---
 
 <!-- C VERSION SETUP -->
 
@@ -151,6 +159,7 @@ To clone the repository onto your Raspberry Pi follow these steps.
      ```sh
      make clean
      ```
+---
 
 <!-- ARM ASSEMBLY VERSION SETUP -->
 
@@ -170,6 +179,49 @@ To clone the repository onto your Raspberry Pi follow these steps.
      ```sh
      make clean
      ```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- HOW TO PLAY -->
+
+## How to Play
+
+Below are the rules and a step-by-step explanation of how to play the **Raspberry Pi Stacker Game** game:
+
+### Starting the Game
+1. When the program is run, a **starting animation** will play:
+   - The LEDs will light up one at a time in sequence from bottom to top.
+   - After reaching the last LED, the sequence will reverse and light up the LEDs from top to bottom.
+   - This animation will continue looping until the player presses the button, signaling they are ready to play.
+
+2. Once the button is pressed, the game begins, starting with the first LED blinking.
+
+---
+
+### Gameplay
+
+1. **Objective**:
+   - Your goal is to light up all the LEDs in the row by pressing the button at the correct time.
+
+2. **How to Play**:
+   - The first LED will start blinking.
+   - **Press the button while the LED is ON** to lock it in place and proceed to the next LED.
+   - If you **press the button while the LED is OFF**, you lose, and all previously lit LEDs will turn off. You'll need to restart from the first LED.
+
+3. **Progression**:
+   - As you successfully light up each LED, the game will move to the next LED in the sequence.
+   - Continue this process until all LEDs in the row are lit to win the game.
+
+---
+
+### Winning and Ending Animation
+1. **Winning the Game**:
+   - Once all LEDs are successfully lit, you win the game.
+
+2. **Ending Animation**:
+   - After you win, an **ending animation** will play:
+     - All blue LEDs will turn on, followed by all red LEDs.
+     - This sequence will repeat 10 times before the program ends.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
