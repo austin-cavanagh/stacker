@@ -1,48 +1,58 @@
-# Compiler and assembler
+# Compiler and assembler settings
+# - Change the compiler to gcc and assembler to as
+# - Enable all warnings (-Wall)
+# - Enable debugging symbols (-g)
 CC = gcc
 AS = as
 
-# Directories
+# Linker flags 
+# - Attach the wiringPi library to the executable
+LDFLAGS = -lwiringPi
+
+# Directories 
+# - Specify where the source files and build output will go
 SRC_DIR = src
 BUILD_DIR = build
-INCLUDE_DIR = include
-
-# Flags
-CFLAGS = -I$(INCLUDE_DIR)
-LDFLAGS = -lwiringPi
 
 # Source files
 C_SRC = $(SRC_DIR)/blinkLed.c
 ASM_SRC = $(SRC_DIR)/main.s
 
-# Object files (in the build directory)
+# Object files
 OBJ = $(BUILD_DIR)/blinkLed.o $(BUILD_DIR)/main.o
 
 # Default target
-all: $(BUILD_DIR)/stacker  # Changed the target name here
+all: $(BUILD_DIR)/stacker  
 
-# The final binary
-$(BUILD_DIR)/stacker: $(OBJ)  # Changed the target name here
+# Linking 
+# - Create the final executable from all object files
+$(BUILD_DIR)/stacker: $(OBJ)  
 	$(CC) -o $@ $^ $(LDFLAGS)
 
-# Compile C source file(s)
+# Compilation pattern rule 
+# - How to build .o from .c source files
+# - Make sure the build directory exists first
 $(BUILD_DIR)/blinkLed.o: $(C_SRC) | $(BUILD_DIR)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-# Assemble assembly source file(s)
+# Assembly pattern rule
+# - How to build .o from .s assembly source files
 $(BUILD_DIR)/main.o: $(ASM_SRC) | $(BUILD_DIR)
 	$(AS) -o $@ $<
 
-# Ensure build directory exists
+# Ensure the build directory exists
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 
-# Clean up build artifacts
+# Run target 
+# - Shortcut to build and then run the executable
+run: $(BUILD_DIR)/stacker 
+	./$(BUILD_DIR)/stacker 
+
+# Clean target 
+# - Remove the build directory and all build files
 clean:
 	rm -rf $(BUILD_DIR) $(SRC_DIR)/*.o
 
-# Run the program
-run: $(BUILD_DIR)/stacker  # Changed the target name here
-	./$(BUILD_DIR)/stacker  # Changed the executable name here
-
+# Declare targets that are not files as phony to ensure they always execute regardless of file states
 .PHONY: all clean run
